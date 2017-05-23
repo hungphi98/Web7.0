@@ -42,12 +42,19 @@ var create = function(){
 }
 
 var recurse = function(){
-    bg= background.position.y-960;
-    recurse();
+    if (background.position.y>=0 && background.position.y<=960){bg= background.position.y-960;}
+    else {
+        background.position.y=0;
+        background.position.y+=3;
+
+    }
+
+
 }
 
 // update game state each frame
 var update = function(){
+    background.position.y+=2;
     recurse();
     if (Nakama.keyboard.isDown(Phaser.Keyboard.UP)){
         Nakama.player.position.y=Math.max(Nakama.player.position.y-10,0);
