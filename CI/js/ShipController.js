@@ -12,6 +12,7 @@ class ShipController {
 
   update(spriteName){
 
+
     if(Nakama.keyboard.isDown(this.configs.UP)){
       this.sprite.position.y = Math.max(this.sprite.position.y - Nakama.configs.PLAYER_SPEED, 0);
     }

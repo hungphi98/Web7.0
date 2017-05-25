@@ -3,6 +3,12 @@ Nakama.configs = {
   PLAYER_SPEED      : 10,
   BACKGROUND_SPEED  : 5
 };
+Nakama.emRec = [];
+Nakama.enemy = new Array(5);
+Nakama.moveRight=true;
+for (var i = 0; i < 5; i++) {
+  Nakama.enemy[i] = new Array(4);
+}
 
 window.onload = function(){
   Nakama.game = new Phaser.Game(640,960,Phaser.AUTO,'',
@@ -52,6 +58,15 @@ var create = function(){
     RIGHT : Phaser.Keyboard.D,
     FIRE  : Phaser.Keyboard.SPACEBAR
 });
+    for (let row=0;row<5;row++){
+        let tempRow =row * 62;
+        for (let col=0;col<4;col++){
+            let tempCol = col*62;
+            Nakama.enemy[row][col] = new EnemyController(tempRow,tempCol,'EnemyType3.png');
+        }
+    }
+
+
 
  /* Nakama.bullet = new BulletController(300,400,'BulletType1.png',Nakama.player);
   Nakama.bullet2 = new BulletController(600,400,'BulletType2.png',Nakama.partner);
@@ -66,6 +81,12 @@ var update = function(){
   Nakama.player.update('BulletType1.png');
 
   Nakama.partner.update('BulletType2.png');
+  for (let row=0;row<5;row++){
+      for (let col=0;col<4;col++){
+          Nakama.enemy[row][col].update();
+      }
+  }
+
 
 
 }
