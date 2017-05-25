@@ -1,5 +1,8 @@
 var Nakama = {};
-Nakama.configs = {};
+Nakama.configs = {
+  PLAYER_SPEED      : 10,
+  BACKGROUND_SPEED  : 5
+};
 
 window.onload = function(){
   Nakama.game = new Phaser.Game(640,960,Phaser.AUTO,'',
@@ -25,49 +28,44 @@ var preload = function(){
 
   Nakama.game.load.atlasJSONHash('assets', 'Assets/assets.png', 'Assets/assets.json');
   Nakama.game.load.image('background', 'Assets/Map1.png');
-
-
 }
-var background ;
-var bg;
+
 // initialize the game
 var create = function(){
   Nakama.game.physics.startSystem(Phaser.Physics.ARCADE);
   Nakama.keyboard = Nakama.game.input.keyboard;
 
- background = Nakama.game.add.sprite(0,0,'background');
- bg=Nakama.game.add.sprite(0,-960,'background');
-  Nakama.player= Nakama.game.add.sprite(300,400,'assets','Spaceship1-Player.png');
+  Nakama.background = Nakama.game.add.tileSprite(0, 0, 640, 960, 'background');
 
-}
+  Nakama.player = new ShipController(300, 400, 'Spaceship1-Player.png', {
+    UP    : Phaser.Keyboard.UP,
+    DOWN  : Phaser.Keyboard.DOWN,
+    LEFT  : Phaser.Keyboard.LEFT,
+    RIGHT : Phaser.Keyboard.RIGHT,
+    FIRE  : Phaser.Keyboard.CONTROL
+});
 
-var recurse = function(){
-    if (background.position.y>=0 && background.position.y<=960){bg= background.position.y-960;}
-    else {
-        background.position.y=0;
-        background.position.y+=3;
+  Nakama.partner = new ShipController(400, 400, 'Spaceship1-Partner.png', {
+    UP    : Phaser.Keyboard.W,
+    DOWN  : Phaser.Keyboard.S,
+    LEFT  : Phaser.Keyboard.A,
+    RIGHT : Phaser.Keyboard.D,
+    FIRE  : Phaser.Keyboard.SPACEBAR
+});
 
-    }
-
-
+ /* Nakama.bullet = new BulletController(300,400,'BulletType1.png',Nakama.player);
+  Nakama.bullet2 = new BulletController(600,400,'BulletType2.png',Nakama.partner);
+  */
 }
 
 // update game state each frame
 var update = function(){
-    background.position.y+=2;
-    recurse();
-    if (Nakama.keyboard.isDown(Phaser.Keyboard.UP)){
-        Nakama.player.position.y=Math.max(Nakama.player.position.y-10,0);
-    }
-    if (Nakama.keyboard.isDown(Phaser.Keyboard.DOWN)){
-        Nakama.player.position.y=Math.min(Nakama.player.position.y+10,Nakama.game.height-18);
-    }
-    if (Nakama.keyboard.isDown(Phaser.Keyboard.RIGHT)){
-        Nakama.player.position.x=Math.min(Nakama.player.position.x+10,Nakama.game.width-78);
-    }
-    if (Nakama.keyboard.isDown(Phaser.Keyboard.LEFT)){
-        Nakama.player.position.x=Math.max(Nakama.player.position.x-10,0);;
-    }
+
+  Nakama.background.tilePosition.y += Nakama.configs.BACKGROUND_SPEED;
+
+  Nakama.player.update('BulletType1.png');
+
+  Nakama.partner.update('BulletType2.png');
 
 
 }
