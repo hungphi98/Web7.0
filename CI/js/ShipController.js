@@ -6,8 +6,15 @@ class ShipController {
   }
 
   fire(spriteName){
-      Nakama.bullet = new BulletController(this.sprite.position.x,this.sprite.position.y, spriteName);
+      Nakama.bulletList.push (new BulletController(this.sprite.position.x,this.sprite.position.y, spriteName)) ;
 
+
+
+     
+
+
+    //  console.log(Nakama.emLoc.toString());
+      Nakama.bulletCounter++;
   }
 
   update(spriteName){
@@ -15,6 +22,7 @@ class ShipController {
 
     if(Nakama.keyboard.isDown(this.configs.UP)){
       this.sprite.position.y = Math.max(this.sprite.position.y - Nakama.configs.PLAYER_SPEED, 0);
+
     }
     else if(Nakama.keyboard.isDown(this.configs.DOWN)){
       this.sprite.position.y = Math.min(this.sprite.position.y + Nakama.configs.PLAYER_SPEED, Nakama.game.height - this.sprite.height);

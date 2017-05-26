@@ -3,11 +3,15 @@ Nakama.configs = {
   PLAYER_SPEED      : 10,
   BACKGROUND_SPEED  : 5
 };
-Nakama.emRec = [];
+Nakama.bulletList =[];
+Nakama.bulletCounter=0;
+Nakama.clashCheck=[];
+Nakama.emLoc=[];
 Nakama.enemy = new Array(5);
 Nakama.moveRight=true;
 for (var i = 0; i < 5; i++) {
   Nakama.enemy[i] = new Array(4);
+  Nakama.emLoc[i]=new Array(4);
 }
 
 window.onload = function(){
@@ -59,10 +63,11 @@ var create = function(){
     FIRE  : Phaser.Keyboard.SPACEBAR
 });
     for (let row=0;row<5;row++){
-        let tempRow =row * 62;
+        let tempRow =row * 100;
         for (let col=0;col<4;col++){
             let tempCol = col*62;
             Nakama.enemy[row][col] = new EnemyController(tempRow,tempCol,'EnemyType3.png');
+
         }
     }
 
@@ -72,6 +77,36 @@ var create = function(){
   Nakama.bullet2 = new BulletController(600,400,'BulletType2.png',Nakama.partner);
   */
 }
+
+ function isDead(){
+     for (let j=0;j<Nakama.clashCheck.length;j++){
+
+         for (let row=0;row<5;row++){
+             for (let col=0;col<4;col++){
+                 let rect1 = {xAxis: Nakama.clashCheck[j].xAxis, yAxis: Nakama.clashCheck[j].yAxis,
+                      Width: Nakama.clashCheck[j].Width, Height: Nakama.clashCheck[j].Height};
+                 let rect2 = {xAxis: Nakama.emLoc[row][col].xAxis, yAxis: Nakama.emLoc[row][col].yAxis,
+                     Width: Nakama.emLoc[row][col].Width, Height: Nakama.emLoc[row][col].Height};
+
+                    //console.log(rect1);
+                    //console.log(rect2);
+
+
+                if (rect1.xAxis < rect2.xAxis + rect2.Width &&
+               rect1.xAxis + rect1.Width > rect2.xAxis &&
+               rect1.yAxis < rect2.yAxis + rect2.Height &&
+               rect1.Height + rect1.yAxis > rect2.yAxis) {
+                   console.log("Collision Detected!!!");
+                // collision detected!
+            }
+                 //isDeath(temp,temp2);
+             }
+         }
+     }
+
+}
+
+
 
 // update game state each frame
 var update = function(){
@@ -83,10 +118,13 @@ var update = function(){
   Nakama.partner.update('BulletType2.png');
   for (let row=0;row<5;row++){
       for (let col=0;col<4;col++){
-          Nakama.enemy[row][col].update();
+          Nakama.enemy[row][col].update(row,col);
       }
   }
-
+  for (let i=0;i<Nakama.bulletList.length;i++){
+      Nakama.bulletList[i].update(i);
+  }
+  isDead();
 
 
 }
