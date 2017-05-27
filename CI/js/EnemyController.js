@@ -20,19 +20,27 @@ class EnemyController{
             }
     }
 
+    getKilled(row,col){
+        
+    }
+
 
 
 
     update(row,col){
 
 
-                this.moveAround();
-                Nakama.emLoc[row][col]={
-                    xAxis:this.sprite.position.x,
-                    yAxis:this.sprite.position.y,
-                    Width:this.sprite.width,
-                    Height:this.sprite.height
-                }
+                    this.moveAround();
+                    Nakama.emLoc[row][col]={
+                        xAxis:this.sprite.position.x,
+                        yAxis:this.sprite.position.y,
+                        Width:this.sprite.width,
+                        Height:this.sprite.height
+                    }
+
+
+
+
                 //Nakama.clash.push([this.sprite.position.x,this.sprite.position.y,this.sprite.height,this.sprite.width]);
                 //this.isDeath();
         }
