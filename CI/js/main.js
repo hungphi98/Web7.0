@@ -1,20 +1,9 @@
 var Nakama = {};
 Nakama.configs = {
-  PLAYER_SPEED      : 500,
   BACKGROUND_SPEED  : 5,
-  BULLET_SPEED:1500
+  PLAYER_SPEED      : 500,
+  BULLET_SPEED      : 1500
 };
-Nakama.bulletList =[];
-Nakama.bulletCounter=0;
-Nakama.clashCheck=[];
-Nakama.emLoc=[];
-
-Nakama.enemy = new Array(5);
-Nakama.moveRight=true;
-for (var i = 0; i < 5; i++) {
-  Nakama.enemy[i] = new Array(4);
-  Nakama.emLoc[i]=new Array(4);
-}
 
 window.onload = function(){
   Nakama.game = new Phaser.Game(640,960,Phaser.AUTO,'',
@@ -48,90 +37,55 @@ var create = function(){
   Nakama.keyboard = Nakama.game.input.keyboard;
 
   Nakama.background = Nakama.game.add.tileSprite(0, 0, 640, 960, 'background');
-
-  Nakama.player = new ShipController(300, 400, 'Spaceship1-Player.png', {
-    up    : Phaser.Keyboard.UP,
-    down  : Phaser.Keyboard.DOWN,
-    left  : Phaser.Keyboard.LEFT,
-    right : Phaser.Keyboard.RIGHT,
-    fire  : Phaser.Keyboard.CONTROL,
-    cooldown:0.3
-});
-
-  Nakama.partner = new ShipController(400, 400, 'Spaceship1-Partner.png', {
-    up   : Phaser.Keyboard.W,
-    down : Phaser.Keyboard.S,
-    left  : Phaser.Keyboard.A,
-    right : Phaser.Keyboard.D,
-    fire  : Phaser.Keyboard.SPACEBAR,
-    cooldown:0.3
-});
-    for (let row=0;row<5;row++){
-        let tempRow =row * 100;
-        for (let col=0;col<4;col++){
-            let tempCol = col*62;
-            Nakama.enemy[row][col] = new EnemyController(tempRow,tempCol,'EnemyType3.png');
-
-        }
-    }
+  Nakama.bulletGroup = Nakama.game.add.physicsGroup();
+  Nakama.playerGroup = Nakama.game.add.physicsGroup();
 
 
+  var playerConfigs= {
+    up      : Phaser.Keyboard.UP,
+    down    : Phaser.Keyboard.DOWN,
+    left    : Phaser.Keyboard.LEFT,
+    right   : Phaser.Keyboard.RIGHT,
+    fire    : Phaser.Keyboard.CONTROL
+};
 
- /* Nakama.bullet = new BulletController(300,400,'BulletType1.png',Nakama.player);
-  Nakama.bullet2 = new BulletController(600,400,'BulletType2.png',Nakama.partner);
-  */
+  var partnerConfigs= {
+    up      : Phaser.Keyboard.W,
+    down    : Phaser.Keyboard.S,
+    left    : Phaser.Keyboard.A,
+    right   : Phaser.Keyboard.D,
+    fire    : Phaser.Keyboard.SPACEBAR
+};
+  do{
+   var userInput = prompt("Please choose your spacecraft\n1:\n2:\n3:");
+   switch(userInput){
+     case '1':
+         Nakama.player   = new ShipType1Controller(400, 600,'Spaceship1-Player.png', playerConfigs);
+         Nakama.partner  = new ShipType1Controller(300,600,'Spaceship1-Partner.png', partnerConfigs);
+       break;
+     case '2':
+         Nakama.player   = new ShipType2Controller(400, 600,'Spaceship2-Player.png', playerConfigs);
+         Nakama.partner  = new ShipType2Controller(300,600,'Spaceship2-Partner.png', partnerConfigs)
+       break;
+     case '3':
+         Nakama.player   = new ShipType3Controller(400, 600,'Spaceship3-Player.png', playerConfigs);
+         Nakama.partner  = new ShipType3Controller(300,600,'Spaceship3-Partner.png', partnerConfigs)
+       break;
+     default:
+       alert('Invalid');
+       break;
+   }
+ }while(userInput < '1' || userInput > '3');
 }
-
- function isDead(){
-     for (let j=0;j<Nakama.clashCheck.length;j++){
-
-         for (let row=0;row<5;row++){
-             for (let col=0;col<4;col++){
-                let rect1 = {xAxis: Nakama.clashCheck[j].xAxis, yAxis: Nakama.clashCheck[j].yAxis,
-                      Width: Nakama.clashCheck[j].Width, Height: Nakama.clashCheck[j].Height};
-                let rect2 = {xAxis: Nakama.emLoc[row][col].xAxis, yAxis: Nakama.emLoc[row][col].yAxis,
-                     Width: Nakama.emLoc[row][col].Width, Height: Nakama.emLoc[row][col].Height};
-                if (rect1.xAxis < rect2.xAxis + rect2.Width &&
-               rect1.xAxis + rect1.Width > rect2.xAxis &&
-               rect1.yAxis < rect2.yAxis + rect2.Height &&
-               rect1.Height + rect1.yAxis > rect2.yAxis) {
-                   console.log("Collision Detected!!!");
-                    Nakama.enemy[row][col] = Nakama.game.add.sprite(0,0);
-                    }
-
-                }
-            }
-        }
-
-}
-
-
 
 
 // update game state each frame
 var update = function(){
   Nakama.background.tilePosition.y += Nakama.configs.BACKGROUND_SPEED;
-  Nakama.player.update('BulletType1.png');
-  Nakama.partner.update('BulletType2.png');
-  for (let row=0;row<5;row++){
-      for (let col=0;col<4;col++){
-          if (Nakama.enemy[row][col] == null){
-              return null;
-          }else{
-               Nakama.enemy[row][col].update(row,col);
-            }
 
-        }
-
-    }
-
-  for (let i=0;i<Nakama.bulletList.length;i++){
-      Nakama.bulletList[i].update(i);
-  }
-isDead();
+  Nakama.player.update();
+  Nakama.partner.update();
 }
-
-
 
 // before camera render (mostly for debug)
 var render = function(){}
