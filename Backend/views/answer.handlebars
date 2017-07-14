@@ -1,0 +1,17 @@
+<form method="post" action='/api/question/{{{id}}}'>
+  <h1>{{{content}}}</h1>
+  <div class="row">
+      <div class="col-xs-6 text-center">
+                <button class="btn btn-danger btn-lg" name = 'yn' type ='submit' value = 'n'>
+                  <span class="glyphicon glyphicon-thumbs-down"></span>
+                  Sai / Không / Trái
+                </button>
+            </div>
+              <div class="col-xs-6 text-center">
+                <button class="btn btn-primary btn-lg" name = 'yn' type ='submit' value = 'y'>
+                  <span class="glyphicon glyphicon-thumbs-up" ></span>
+                  Đúng / Có / Phải
+                </button>
+            </div>
+  </div>
+</form>

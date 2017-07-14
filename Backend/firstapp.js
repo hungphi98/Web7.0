@@ -1,41 +1,30 @@
-const fs = require('fs');
-const crypt = require('crypto');
-const anotherModule = require('./module.js');
 const express = require('express');
-const questionRouter = require('./modules/question/question.js');
 const bodyParser = require('body-parser');
-
-// fs.writeFileSync('helloworld.txt','Hello World');
-// anotherModule.readFile();
+const exhbs = require('express-handlebars');
+const viewRouter = require('./modules/view/view');
+const apiRouter = require('./modules/api/api');
+const mongoose = require('mongoose');
 
 let app = express();
 
-
-app.get('/', (req,res) => {
-    res.send('Welcome to the app');
-    // res.sendFile();
-    // res.redirect('/');
-});
-app.listen(1303, () =>{
-    console.log('app is running');
-});
-app.use(bodyParser.urlencoded({ extended : true}));
-
-app.use('/question',questionRouter);
-
-
-app.get('/object', (req,res) =>{
-    let testObject = {
-        a: "test",
-        b: "abc"
-    }
-
-    res.send(testObject);
+mongoose.connect('mongodb://localhost/quyetde', (err) =>{
+  if (err) {
+    console.log(err);
+  } else {
+    console.log('Connect to db successfully');
+  }
 });
 
-app.get('/redirect', (req,res) =>{
-    res.redirect('/question');
+app.use(bodyParser.urlencoded({extended : true}));
+app.use(bodyParser.json({extended : true}));
+
+app.engine('handlebars', exhbs({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
+
+app.use('/',viewRouter);
+app.use('/api',apiRouter);
+app.use('/css', express.static(__dirname+ '/node_modules/bootstrap/dist/css'));
+app.use('/js', express.static(__dirname+ '/node_modules/bootstrap/dist/js'));
+app.listen(6180, () => {
+  console.log('Listening on: 6180');
 });
-
-
-//console.log("Hello World");
